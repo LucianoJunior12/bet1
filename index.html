@@ -165,23 +165,17 @@
 		"type": "function"
 	}
 ];
-
         async function fazerAposta() {
             const valorApostado = document.getElementById("valorApostado").value;
             const numeroInicial = document.getElementById("numeroInicial").value;
             const numeroFinal = document.getElementById("numeroFinal").value;
 
-            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-            const account = accounts[0];
-
-            const contrato = new ethers.Contract(CONTRATO_ADDRESS, CONTRATO_ABI, signer);
-            const transacao = await contrato.fazerAposta(valorApostado, numeroInicial, numeroFinal, {value: valorApostado});
-            const resultado = await transacao.wait();
-
-            const eventoAposta = resultado.events.filter(event => event.event === "Aposta")[0];
-            const numeroSorteado = eventoAposta.args.numeroSorteado.toNumber();
-            const ganhou = eventoAposta.args.ganhou;
-
+            // Simulação de conexão de carteira
+            alert("Simulação de conexão de carteira. O contrato foi chamado com os seguintes parâmetros: Valor Apostado: " + valorApostado + ", Número Inicial: " + numeroInicial + ", Número Final: " + numeroFinal);
+            
+            // Simulação de resposta do contrato
+            const ganhou = Math.random() < 0.5; // Simula se o jogador ganhou ou perdeu
+            const numeroSorteado = Math.floor(Math.random() * (numeroFinal - numeroInicial + 1)) + Number(numeroInicial); // Simula o número sorteado
             document.getElementById("numeroSorteado").textContent = numeroSorteado;
             document.getElementById("mensagemResultado").textContent = ganhou ? "ganhou" : "perdeu";
         }
@@ -189,14 +183,11 @@
         async function definirRecompensaFixa() {
             const novoValorRecompensa = document.getElementById("novoValorRecompensa").value;
 
-            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-            const account = accounts[0];
-
-            const contrato = new ethers.Contract(CONTRATO_ADDRESS, CONTRATO_ABI, signer);
-            const transacao = await contrato.definirRecompensaFixa(novoValorRecompensa);
-            const resultado = await transacao.wait();
-
-            console.log(resultado);
+            // Simulação de conexão de carteira
+            alert("Simulação de conexão de carteira. Definindo nova recompensa fixa como " + novoValorRecompensa + " Wei.");
+            
+            // Simulação de resposta do contrato
+            console.log("Nova recompensa fixa definida como " + novoValorRecompensa + " Wei.");
         }
     </script>
 </body>
