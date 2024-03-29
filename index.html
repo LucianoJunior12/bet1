@@ -3,21 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interagir com a Carteira</title>
+    <title>Carteira Digital</title>
 </head>
 <body>
     <h1>Carteira Digital</h1>
     <label for="senha">Senha:</label>
     <input type="password" id="senha"><br><br>
+    <label for="enderecoContrato">Endereço do Contrato:</label>
+    <input type="text" id="enderecoContrato"><br><br>
     <label for="valor">Valor:</label>
     <input type="number" id="valor" min="0" step="0.01"><br><br>
+    <button onclick="acessarCarteira()">Acessar Carteira</button>
     <button onclick="depositar()">Depositar</button>
-    <button onclick="sacar()">Sacar</button><br><br>
-    <button onclick="pagarTaxas()">Pagar Taxas</button>
+    <button onclick="transferir()">Transferir</button><br><br>
 
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.3/dist/web3.min.js"></script>
     <script>
-        const contratoEndereco = '0xaEb1f6c21fa760f581877A819a7e76E72796fdc5';
-        const contratoABI = [
+        let contrato;
+        let enderecoContrato;
+
+        // Configurar provedor Web3
+        if (window.ethereum) {
+            window.web3 = new Web3(window.ethereum);
+            window.ethereum.enable();
+        } else if (window.web3) {
+            window.web3 = new Web3(window.web3.currentProvider);
+        } else {
+            alert('Por favor, instale o MetaMask para interagir com este aplicativo!');
+        }
+
+        async function acessarCarteira() {
+            const senha = document.getElementById('senha').value;
+
+            // Verifica se a senha está correta
+            // Substitua 'senhaCorreta' pela senha definida na carteira
+            if (senha !== '130908') {
+                alert('Senha incorreta!');
+                return;
+            }
+
+            // Obter endereço do contrato
+            enderecoContrato = document.getElementById('0xaEb1f6c21fa760f581877A819a7e76E72796fdc5').value;
+
+            // Carregar contrato
+            const response = await fetch('[
 	{
 		"inputs": [
 			{
@@ -176,58 +205,26 @@
 		"stateMutability": "view",
 		"type": "function"
 	}
-];
-
-        const web3 = new Web3(Web3.givenProvider);
-
-        const contrato = new web3.eth.Contract(contratoABI, contratoEndereco);
+]');
+            const abi = await response.json();
+            contrato = new web3.eth.Contract(abi, enderecoContrato);
+            alert('Carteira acessada com sucesso!');
+        }
 
         async function depositar() {
-            const senha = document.getElementById('senha').value;
             const valor = document.getElementById('valor').value;
 
-            // Verifica se a senha está correta
-            // Substitua 'senhaCorreta' pela senha definida na carteira
-            if (senha !== '130908') {
-                alert('Senha incorreta!');
-                return;
-            }
-
-            // Realiza o depósito no contrato
+            // Realizar depósito no contrato
             await contrato.methods.depositar().send({ from: web3.eth.defaultAccount, value: web3.utils.toWei(valor, 'ether') });
             alert('Depósito realizado com sucesso!');
         }
 
-        async function sacar() {
-            const senha = document.getElementById('senha').value;
+        async function transferir() {
             const valor = document.getElementById('valor').value;
 
-            // Verifica se a senha está correta
-            // Substitua 'senhaCorreta' pela senha definida na carteira
-            if (senha !== '130908') {
-                alert('Senha incorreta!');
-                return;
-            }
-
-            // Realiza o saque do contrato
-            await contrato.methods.sacar(web3.utils.toWei(valor, 'ether'), senha).send({ from: web3.eth.defaultAccount });
-            alert('Saque realizado com sucesso!');
-        }
-
-        async function pagarTaxas() {
-            const senha = document.getElementById('senha').value;
-            const valor = document.getElementById('valor').value;
-
-            // Verifica se a senha está correta
-            // Substitua 'senhaCorreta' pela senha definida na carteira
-            if (senha !== 'senhaCorreta') {
-                alert('Senha incorreta!');
-                return;
-            }
-
-            // Realiza o pagamento de taxas do contrato
-            await contrato.methods.pagarTaxas(web3.utils.toWei(valor, 'ether')).send({ from: web3.eth.defaultAccount });
-            alert('Taxas pagas com sucesso!');
+            // Realizar transferência do contrato para outro endereço
+            await contrato.methods.transferir('0xaEb1f6c21fa760f581877A819a7e76E72796fdc5', web3.utils.toWei(valor, 'ether')).send({ from: web3.eth.defaultAccount });
+            alert('Transferência realizada com sucesso!');
         }
     </script>
 </body>
