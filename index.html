@@ -3,92 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Aposta</title>
+    <title>Interagir com a Carteira</title>
 </head>
 <body>
-    <h1>Sistema de Aposta</h1>
-    <label for="valorApostado">Valor da Aposta (em Wei):</label>
-    <input type="number" id="valorApostado">
-    <br>
-    <label for="numeroInicial">Número Inicial:</label>
-    <input type="number" id="numeroInicial">
-    <br>
-    <label for="numeroFinal">Número Final:</label>
-    <input type="number" id="numeroFinal">
-    <br>
-    <button onclick="fazerAposta()">Fazer Aposta</button>
-    <br>
-    <br>
-    <label for="novoValorRecompensa">Novo Valor da Recompensa Fixa (em Wei):</label>
-    <input type="number" id="novoValorRecompensa">
-    <button onclick="definirRecompensaFixa()">Definir Nova Recompensa Fixa</button>
-
-    <div id="resultadoAposta">
-        <h2>Resultado da Última Aposta</h2>
-        <p>Número Sorteado: <span id="numeroSorteado"></span></p>
-        <p>Você <span id="mensagemResultado"></span> a aposta.</p>
-    </div>
+    <h1>Carteira Digital</h1>
+    <label for="senha">Senha:</label>
+    <input type="password" id="senha"><br><br>
+    <label for="valor">Valor:</label>
+    <input type="number" id="valor" min="0" step="0.01"><br><br>
+    <button onclick="depositar()">Depositar</button>
+    <button onclick="sacar()">Sacar</button><br><br>
+    <button onclick="pagarTaxas()">Pagar Taxas</button>
 
     <script>
-        const CONTRATO_ADDRESS = "0xf85EDDe188d7CF8DAfCdEb4fd92a4a845d8bCaab";
-        const CONTRATO_ABI = [
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "jogador",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "valorApostado",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "numeroInicial",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "numeroFinal",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "numeroSorteado",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "ganhou",
-				"type": "bool"
-			}
-		],
-		"name": "Aposta",
-		"type": "event"
-	},
+        const contratoEndereco = '0xaEb1f6c21fa760f581877A819a7e76E72796fdc5';
+        const contratoABI = [
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "_novaRecompensa",
-				"type": "uint256"
+				"internalType": "string",
+				"name": "_novaSenha",
+				"type": "string"
 			}
 		],
-		"name": "definirRecompensaFixa",
+		"name": "definirSenha",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -103,27 +41,101 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "_numeroInicial",
-				"type": "uint256"
+				"internalType": "string",
+				"name": "_senha",
+				"type": "string"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "remetente",
+				"type": "address"
 			},
 			{
+				"indexed": false,
 				"internalType": "uint256",
-				"name": "_numeroFinal",
+				"name": "valor",
 				"type": "uint256"
 			}
 		],
-		"name": "fazerAposta",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
+		"name": "FundosDepositados",
+		"type": "event"
 	},
 	{
-		"inputs": [],
-		"name": "sacarSaldoContrato",
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "destinatario",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "valor",
+				"type": "uint256"
+			}
+		],
+		"name": "FundosRetirados",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_valor",
+				"type": "uint256"
+			}
+		],
+		"name": "pagarTaxas",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_valor",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_senha",
+				"type": "string"
+			}
+		],
+		"name": "retirar",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "destinatario",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "valor",
+				"type": "uint256"
+			}
+		],
+		"name": "TaxasPagas",
+		"type": "event"
 	},
 	{
 		"inputs": [],
@@ -140,7 +152,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "recompensaFixa",
+		"name": "saldo",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -153,41 +165,69 @@
 	},
 	{
 		"inputs": [],
-		"name": "saldoContrato",
+		"name": "senha",
 		"outputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "",
-				"type": "uint256"
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
 		"type": "function"
 	}
 ];
-        async function fazerAposta() {
-            const valorApostado = document.getElementById("valorApostado").value;
-            const numeroInicial = document.getElementById("numeroInicial").value;
-            const numeroFinal = document.getElementById("numeroFinal").value;
 
-            // Simulação de conexão de carteira
-            alert("Simulação de conexão de carteira. O contrato foi chamado com os seguintes parâmetros: Valor Apostado: " + valorApostado + ", Número Inicial: " + numeroInicial + ", Número Final: " + numeroFinal);
-            
-            // Simulação de resposta do contrato
-            const ganhou = Math.random() < 0.5; // Simula se o jogador ganhou ou perdeu
-            const numeroSorteado = Math.floor(Math.random() * (numeroFinal - numeroInicial + 1)) + Number(numeroInicial); // Simula o número sorteado
-            document.getElementById("numeroSorteado").textContent = numeroSorteado;
-            document.getElementById("mensagemResultado").textContent = ganhou ? "ganhou" : "perdeu";
+        const web3 = new Web3(Web3.givenProvider);
+
+        const contrato = new web3.eth.Contract(contratoABI, contratoEndereco);
+
+        async function depositar() {
+            const senha = document.getElementById('senha').value;
+            const valor = document.getElementById('valor').value;
+
+            // Verifica se a senha está correta
+            // Substitua 'senhaCorreta' pela senha definida na carteira
+            if (senha !== '130908') {
+                alert('Senha incorreta!');
+                return;
+            }
+
+            // Realiza o depósito no contrato
+            await contrato.methods.depositar().send({ from: web3.eth.defaultAccount, value: web3.utils.toWei(valor, 'ether') });
+            alert('Depósito realizado com sucesso!');
         }
 
-        async function definirRecompensaFixa() {
-            const novoValorRecompensa = document.getElementById("novoValorRecompensa").value;
+        async function sacar() {
+            const senha = document.getElementById('senha').value;
+            const valor = document.getElementById('valor').value;
 
-            // Simulação de conexão de carteira
-            alert("Simulação de conexão de carteira. Definindo nova recompensa fixa como " + novoValorRecompensa + " Wei.");
-            
-            // Simulação de resposta do contrato
-            console.log("Nova recompensa fixa definida como " + novoValorRecompensa + " Wei.");
+            // Verifica se a senha está correta
+            // Substitua 'senhaCorreta' pela senha definida na carteira
+            if (senha !== '130908') {
+                alert('Senha incorreta!');
+                return;
+            }
+
+            // Realiza o saque do contrato
+            await contrato.methods.sacar(web3.utils.toWei(valor, 'ether'), senha).send({ from: web3.eth.defaultAccount });
+            alert('Saque realizado com sucesso!');
+        }
+
+        async function pagarTaxas() {
+            const senha = document.getElementById('senha').value;
+            const valor = document.getElementById('valor').value;
+
+            // Verifica se a senha está correta
+            // Substitua 'senhaCorreta' pela senha definida na carteira
+            if (senha !== 'senhaCorreta') {
+                alert('Senha incorreta!');
+                return;
+            }
+
+            // Realiza o pagamento de taxas do contrato
+            await contrato.methods.pagarTaxas(web3.utils.toWei(valor, 'ether')).send({ from: web3.eth.defaultAccount });
+            alert('Taxas pagas com sucesso!');
         }
     </script>
 </body>
